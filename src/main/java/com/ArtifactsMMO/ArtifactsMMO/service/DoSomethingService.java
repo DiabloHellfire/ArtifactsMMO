@@ -12,6 +12,6 @@ public class DoSomethingService {
 
     public void doSomething() {
         System.out.println("Doing something");
-        webClient.get().uri("/").retrieve().bodyToMono(String.class).subscribe(System.out::println); // TODO : Call going through by unable to load io.netty.resolver
+        webClient.get().retrieve().bodyToMono(String.class).subscribe(System.out::println); // TODO : Call going through by unable to load io.netty.resolver
     }
 }

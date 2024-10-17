@@ -1,0 +1,4 @@
+config:
+  token: token
+  user:
+    name: name
