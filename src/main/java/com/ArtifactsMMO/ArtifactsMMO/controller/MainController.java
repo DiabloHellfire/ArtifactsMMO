@@ -1,9 +1,8 @@
 package com.ArtifactsMMO.ArtifactsMMO.controller;
 
-import com.ArtifactsMMO.ArtifactsMMO.service.DoSomethingService;
+import com.ArtifactsMMO.ArtifactsMMO.model.place.CopperRocks;
+import com.ArtifactsMMO.ArtifactsMMO.service.MainService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MainController {
 
-    private final DoSomethingService doSomethingService;
+    private final MainService mainService;
 
     @GetMapping("/doSomething")
     public void doSomething() {
-        doSomethingService.doSomething();
+        mainService.main();
     }
 }
