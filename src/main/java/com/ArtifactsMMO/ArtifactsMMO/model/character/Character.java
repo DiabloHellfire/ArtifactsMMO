@@ -1,5 +1,6 @@
 package com.ArtifactsMMO.ArtifactsMMO.model.character;
 
+import com.ArtifactsMMO.ArtifactsMMO.model.Location;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -204,4 +205,8 @@ public class Character {
     private int inventoryMaxItems;
 
     private List<InventoryItem> inventory;
+
+    public Location getLocation() {
+        return Location.of(x, y);
+    }
 }

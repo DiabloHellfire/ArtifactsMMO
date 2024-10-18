@@ -13,6 +13,6 @@ public class MainController {
 
     @GetMapping("/doSomething")
     public void doSomething() {
-        mainService.main();
+        mainService.main(1);
     }
 }

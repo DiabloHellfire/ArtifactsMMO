@@ -4,4 +4,4 @@ spring:
 config:
   game:
     name: ArtifactsMMO
-  server: https://api.artifactsmmo.com/
+  server: https://api.artifactsmmo.com
