@@ -1,4 +1,4 @@
-package com.ArtifactsMMO.ArtifactsMMO.model.utils;
+package com.ArtifactsMMO.ArtifactsMMO.model.wrapper;
 
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import lombok.AllArgsConstructor;

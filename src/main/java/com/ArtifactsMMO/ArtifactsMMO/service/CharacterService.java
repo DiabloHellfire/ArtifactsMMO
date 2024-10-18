@@ -1,10 +1,7 @@
 package com.ArtifactsMMO.ArtifactsMMO.service;
 
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
-import com.ArtifactsMMO.ArtifactsMMO.model.utils.CharacterResponseWrapper;
-import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.CharacterResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
