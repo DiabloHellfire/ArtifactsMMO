@@ -1,5 +1,6 @@
 package com.ArtifactsMMO.ArtifactsMMO.action;
 
+import com.ArtifactsMMO.ArtifactsMMO.model.Action;
 import com.ArtifactsMMO.ArtifactsMMO.model.Location;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.PlaceBase;
@@ -18,7 +19,7 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.MOVEMENT_URL;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MovementAction {
+public class MovementAction implements Action {
     private final WebClient webClient;
     public void move(Location location, Character character) {
         if(!isAlreadyAtLocation(location, character))
