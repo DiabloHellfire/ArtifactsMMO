@@ -18,10 +18,6 @@ public class BuildingBase extends PlaceBase {
         this.actions = new ArrayList<>();
     }
 
-    public void addAction(Action action) {
-        actions.add(action);
-    }
-
     public <T extends Action> T getAction(Class<T> type) {
         Optional<T> action = actions.stream()
                 .filter(type::isInstance) // Check if the action is an instance of the specified type

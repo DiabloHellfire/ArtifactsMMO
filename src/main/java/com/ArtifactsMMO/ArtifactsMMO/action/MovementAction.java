@@ -22,11 +22,12 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.MOVEMENT_URL;
 public class MovementAction implements Action {
     private final WebClient webClient;
     public void move(Location location, Character character) {
-        if(!isAlreadyAtLocation(location, character))
+        if(!isAlreadyAtLocation(location, character)) {
             move(location.getX(), location.getY());
-        else
+            character.setLocation(location);
+        } else {
             log.info("Player already at location [{},{}]", location.getX(), location.getY());
-
+        }
     }
 
     public void move(PlaceBase place, Character character) {

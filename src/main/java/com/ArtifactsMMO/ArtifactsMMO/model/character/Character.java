@@ -1,6 +1,7 @@
 package com.ArtifactsMMO.ArtifactsMMO.model.character;
 
 import com.ArtifactsMMO.ArtifactsMMO.model.Location;
+import com.ArtifactsMMO.ArtifactsMMO.model.item.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -209,4 +210,28 @@ public class Character {
     public Location getLocation() {
         return Location.of(x, y);
     }
+
+    public void setLocation(Location location) {
+        this.x = location.getX();
+        this.y = location.getY();
+    }
+
+    public int getMaxFreeInventorySlot() {
+        var currentInventoryUsedSlots = inventory.stream()
+                .map(InventoryItem::getQuantity)
+                .reduce(0, Integer::sum);
+        return inventoryMaxItems - currentInventoryUsedSlots;
+    }
+
+    public int getInventoryQuantity(String code) {
+        return inventory.stream()
+                .filter(inventoryItem -> inventoryItem.getCode().equals(code))
+                .map(InventoryItem::getQuantity)
+                .reduce(0, Integer::sum);
+    }
+
+    public int getInventoryQuantity(Item item) {
+        return getInventoryQuantity(item.getCode());
+    }
+
 }

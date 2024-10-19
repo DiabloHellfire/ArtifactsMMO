@@ -14,7 +14,7 @@ public class BodyPayload {
             var objectMapper = new ObjectMapper();
             objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
             var body = objectMapper.writeValueAsString(bodyParameters);
-            log.info("Body parameters converted to JSON : {}", body);
+//            log.info("Body parameters converted to JSON : {}", body);
             return body;
         } catch (Exception e) {
             log.error("Error while converting body parameters to JSON", e);
