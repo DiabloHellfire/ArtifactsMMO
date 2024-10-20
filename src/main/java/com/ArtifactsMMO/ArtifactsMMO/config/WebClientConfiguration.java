@@ -58,6 +58,17 @@ public class WebClientConfiguration {
                 .build();
     }
 
+    @Bean("baseWebClient")
+    public WebClient baseWebClient() {
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create().secure(sslContextSpec ->
+                                sslContextSpec.sslContext(SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)))))
+                .baseUrl(serverUrl)
+                .defaultHeader("Accept", MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
                 StringBuilder sb = new StringBuilder("Request: \n");

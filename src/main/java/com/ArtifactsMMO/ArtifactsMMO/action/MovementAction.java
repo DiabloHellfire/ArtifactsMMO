@@ -5,7 +5,6 @@ import com.ArtifactsMMO.ArtifactsMMO.model.Location;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.PlaceBase;
 import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.CommonApiWrapper;
-import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.MovementWrapper;
 import com.ArtifactsMMO.ArtifactsMMO.utils.BodyPayload;
 import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
 import lombok.RequiredArgsConstructor;
