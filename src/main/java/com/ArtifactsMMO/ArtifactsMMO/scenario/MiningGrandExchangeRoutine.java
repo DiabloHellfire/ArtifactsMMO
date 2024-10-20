@@ -2,6 +2,7 @@ package com.ArtifactsMMO.ArtifactsMMO.scenario;
 
 import com.ArtifactsMMO.ArtifactsMMO.action.*;
 import com.ArtifactsMMO.ArtifactsMMO.model.Location;
+import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.Copper;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperOre;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.Bank;
@@ -60,6 +61,11 @@ public class MiningGrandExchangeRoutine {
             character = characterReponse;
         }
 
+        // Move to bank & deposit gold
+        characterReponse = movementAction.move(bank, character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
         bank.getAction(DepositAction.class).depositGold(character.getGold());
 
         log.info("Copper ore grand exchange mining routine finished");

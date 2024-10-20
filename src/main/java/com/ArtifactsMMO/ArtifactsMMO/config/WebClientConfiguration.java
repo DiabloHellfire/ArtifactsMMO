@@ -66,6 +66,10 @@ public class WebClientConfiguration {
                                 sslContextSpec.sslContext(SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)))))
                 .baseUrl(serverUrl)
                 .defaultHeader("Accept", MediaType.APPLICATION_JSON_VALUE)
+//                .filters(exchangeFilterFunctions -> {
+//                    exchangeFilterFunctions.add(logRequest());
+//                    exchangeFilterFunctions.add(logResponse());
+//                })
                 .build();
     }
 

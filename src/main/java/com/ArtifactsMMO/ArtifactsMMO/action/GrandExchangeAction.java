@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
@@ -51,11 +52,9 @@ public class GrandExchangeAction implements Action {
 
     public int getItemPrice(Item item) {
         log.info("Getting GrandExchange price for {}", item.getName());
-        var grandExchangegResponse = baseWebClient.post()
-                .uri(uriBuilder -> uriBuilder.path(GRAND_EXCHANGE_GET_PRICE_URL)
-                        .queryParam("itemCode", item.getCode())
-                        .build())
-                .bodyValue("")
+
+        var grandExchangegResponse = baseWebClient.get()
+                .uri(GRAND_EXCHANGE_GET_PRICE_URL + item.getCode())
                 .retrieve()
                 .bodyToMono(GrandExchangeApiWrapper.class)
                 .map(GrandExchangeApiWrapper::getData)
@@ -66,15 +65,14 @@ public class GrandExchangeAction implements Action {
 
     public int getItemMaxQuantity(Item item) {
         log.info("Getting GrandExchange max sell quantity for {}", item.getName());
-        var grandExchangegResponse = baseWebClient.post()
-                .uri(uriBuilder -> uriBuilder.path(GRAND_EXCHANGE_GET_PRICE_URL)
-                        .queryParam("itemCode", item.getCode())
-                        .build())
-                .bodyValue("")
+
+        var grandExchangegResponse = baseWebClient.get()
+                .uri(GRAND_EXCHANGE_GET_PRICE_URL + item.getCode())
                 .retrieve()
                 .bodyToMono(GrandExchangeApiWrapper.class)
                 .map(GrandExchangeApiWrapper::getData)
                 .block();
+        log.info("grandExchangegResponse: {}", grandExchangegResponse);
 
         return grandExchangegResponse.getMaxQuantity();
     }

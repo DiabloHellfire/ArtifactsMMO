@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 public class CopperOre extends Item {
 
     public CopperOre() {
-        this.code = "copper ore";
-        this.name = "copper_ore";
+        this.code = "copper_ore";
+        this.name = "copper ore";
         this.itemsForCraft = 0;
     }
 }
