@@ -1,11 +1,11 @@
 package com.ArtifactsMMO.ArtifactsMMO.service;
 
-import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperDagger;
+import com.ArtifactsMMO.ArtifactsMMO.model.mob.RedSlime;
+import com.ArtifactsMMO.ArtifactsMMO.scenario.FightingLoopRoutine;
 import com.ArtifactsMMO.ArtifactsMMO.scenario.MiningBankRoutine;
 import com.ArtifactsMMO.ArtifactsMMO.scenario.MiningGrandExchangeRoutine;
 import com.ArtifactsMMO.ArtifactsMMO.scenario.MiningRecycleRoutine;
-import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,8 @@ public class MainService {
     private final MiningGrandExchangeRoutine miningGrandExchangeRoutine;
     private final MiningRecycleRoutine miningRecycleRoutine;
     private final CopperDagger copperDagger;
+    private final FightingLoopRoutine fightingLoopRoutine;
+    private final RedSlime redSlime;
 
     public void main() {
         // Execute indefinitly
@@ -36,7 +38,8 @@ public class MainService {
             if (times < 0) {
                 log.info("Mining copper rocks indefinitly");
                 while (true) {
-                    miningRecycleRoutine.copperRoutine(copperDagger);
+                    fightingLoopRoutine.fightingLoop(redSlime);
+//                    miningRecycleRoutine.copperRoutine(copperDagger);
                 }
             } else {
                 for (int i = 0; i < times; i++) {

@@ -3,6 +3,7 @@ package com.ArtifactsMMO.ArtifactsMMO.action;
 import com.ArtifactsMMO.ArtifactsMMO.model.Action;
 import com.ArtifactsMMO.ArtifactsMMO.model.Location;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
+import com.ArtifactsMMO.ArtifactsMMO.model.mob.Mob;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.PlaceBase;
 import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.CommonApiWrapper;
 import com.ArtifactsMMO.ArtifactsMMO.utils.BodyPayload;
@@ -32,6 +33,9 @@ public class MovementAction implements Action {
 
     public Character move(PlaceBase place, Character character) {
         return move(place.getLocation(), character);
+    }
+    public Character move(Mob mob, Character character) {
+        return move(mob.getLocation(), character);
     }
 
     private Character move(int x, int y) {
