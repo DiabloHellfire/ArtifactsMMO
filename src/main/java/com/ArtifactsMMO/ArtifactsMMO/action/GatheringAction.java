@@ -14,7 +14,7 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.GATHER_URL;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class GatheringAction implements Action {
+public class GatheringAction extends Action {
     private final WebClient webClient;
 
     public Character gather(int times) {

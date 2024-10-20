@@ -5,17 +5,30 @@ import com.ArtifactsMMO.ArtifactsMMO.action.MovementAction;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.mob.Mob;
 import com.ArtifactsMMO.ArtifactsMMO.service.CharacterService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class FightingLoopRoutine {
+@Data
+public class FightingLoopRoutine extends Scenario{
     private final MovementAction movementAction;
     private final CharacterService characterService;
     private final FightAction fightAction;
+
+    @Autowired
+    public FightingLoopRoutine(MovementAction movementAction,
+                               CharacterService characterService,
+                               FightAction fightAction) {
+        this.movementAction = movementAction;
+        this.characterService = characterService;
+        this.fightAction = fightAction;
+        this.scenarioName = "fightingLoopRoutine";
+    }
+
     public Character fightingLoop(Mob mob) {
         log.info("Beginning {} fighting loop", mob.getName());
 

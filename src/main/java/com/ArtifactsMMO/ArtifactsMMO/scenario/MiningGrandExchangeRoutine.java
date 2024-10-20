@@ -11,14 +11,18 @@ import com.ArtifactsMMO.ArtifactsMMO.model.place.*;
 import com.ArtifactsMMO.ArtifactsMMO.service.CharacterService;
 import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
 import com.ArtifactsMMO.ArtifactsMMO.utils.ItemsToCraftUtils;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class MiningGrandExchangeRoutine {
+@Data
+public class MiningGrandExchangeRoutine extends Scenario {
     private final GrandExchange grandExchange;
     private final MovementAction movementAction;
     private final GatheringAction gatheringAction;
@@ -32,6 +36,36 @@ public class MiningGrandExchangeRoutine {
     private final CopperRocks copperRocks;
     private final WeaponCrafting weaponCrafting;
     private final GearCrafting gearCrafting;
+
+    @Autowired
+    public MiningGrandExchangeRoutine(GrandExchange grandExchange,
+                                      MovementAction movementAction,
+                                      GatheringAction gatheringAction,
+                                      CharacterService characterService,
+                                      CopperOre copperOre,
+                                      Copper copper,
+                                      CopperDagger copperDagger,
+                                      CopperBoots copperBoots,
+                                      Bank bank,
+                                      Forge forge,
+                                      CopperRocks copperRocks,
+                                      WeaponCrafting weaponCrafting,
+                                      GearCrafting gearCrafting) {
+        this.grandExchange = grandExchange;
+        this.movementAction = movementAction;
+        this.gatheringAction = gatheringAction;
+        this.characterService = characterService;
+        this.copperOre = copperOre;
+        this.copper = copper;
+        this.copperDagger = copperDagger;
+        this.copperBoots = copperBoots;
+        this.bank = bank;
+        this.forge = forge;
+        this.copperRocks = copperRocks;
+        this.weaponCrafting = weaponCrafting;
+        this.gearCrafting = gearCrafting;
+        this.scenarioName = "miningGrandExchangeRoutine";
+    }
 
     public void copperOreRoutine() {
         log.info("Beginning copper ore grand exchange mining routine");
@@ -201,7 +235,7 @@ public class MiningGrandExchangeRoutine {
     }
 
     public void copperBootsRoutine() {
-        log.info("Beginning copper dagger grand exchange mining routine");
+        log.info("Beginning copper boots grand exchange mining routine");
 
         // Retrieve our character informations
         var character = characterService.getCharacter();

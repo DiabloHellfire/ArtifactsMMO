@@ -11,5 +11,6 @@ public class CopperBoots extends Item {
             this.code = "copper_boots";
             this.name = "Copper Boots";
             this.itemsForCraft = 8;
+            this.minCorrectPrice = 110;
         }
 }

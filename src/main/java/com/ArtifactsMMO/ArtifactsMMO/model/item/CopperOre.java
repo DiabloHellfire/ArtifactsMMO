@@ -11,5 +11,6 @@ public class CopperOre extends Item {
         this.code = "copper_ore";
         this.name = "copper ore";
         this.itemsForCraft = 0;
+        this.minCorrectPrice = 14;
     }
 }

@@ -12,20 +12,38 @@ import com.ArtifactsMMO.ArtifactsMMO.model.place.Forge;
 import com.ArtifactsMMO.ArtifactsMMO.service.CharacterService;
 import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
 import com.ArtifactsMMO.ArtifactsMMO.utils.ItemsToCraftUtils;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class MiningBankRoutine {
+@Data
+public class MiningBankRoutine extends Scenario {
     private final Forge forge;
     private final Copper copper;
     private final Bank bank;
     private final MovementAction movementAction;
     private final GatheringAction gatheringAction;
     private final CharacterService characterService;
+
+    @Autowired
+    public MiningBankRoutine(Forge forge,
+                             Copper copper,
+                             Bank bank,
+                             MovementAction movementAction,
+                             GatheringAction gatheringAction,
+                             CharacterService characterService) {
+        this.forge = forge;
+        this.copper = copper;
+        this.bank = bank;
+        this.movementAction = movementAction;
+        this.gatheringAction = gatheringAction;
+        this.characterService = characterService;
+        this.scenarioName = "miningBankRoutine";
+    }
 
     public void copperRoutine() {
         log.info("Beginning copper mining routine");

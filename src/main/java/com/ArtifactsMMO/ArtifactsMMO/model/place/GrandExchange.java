@@ -14,4 +14,5 @@ public class GrandExchange extends BuildingBase{
         super("grand_exchange", Location.of(5,1));
         actions.add(grandExchangeAction);
     }
+
 }

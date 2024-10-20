@@ -10,5 +10,6 @@ public class CopperDagger extends Item {
         this.code = "copper_dagger";
         this.name = "CopperDagger";
         this.itemsForCraft = 6;
+        this.minCorrectPrice = 60;
     }
 }

@@ -14,7 +14,7 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.FIGHT_URL;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FightAction implements Action {
+public class FightAction extends Action {
 
     private final WebClient webClient;
 

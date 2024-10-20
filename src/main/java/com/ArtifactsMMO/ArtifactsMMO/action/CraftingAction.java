@@ -18,7 +18,7 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.CRAFT_URL;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CraftingAction implements Action {
+public class CraftingAction extends Action {
     private final WebClient webClient;
 
     public Character craft(Item item, int quantity) {

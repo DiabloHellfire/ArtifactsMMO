@@ -7,7 +7,7 @@ public class ActionUrlUtils {
     public static final String DEPOSIT_URL = "/action/bank/deposit";
     public static final String DEPOSIT_GOLD_URL = "/action/bank/deposit/gold";
     public static final String RECYCLE_URL = "/action/recycling";
-    public static final String GRAND_EXCHANGE_GET_PRICE_URL = "/ge/";
+    public static final String GRAND_EXCHANGE_URL = "/ge";
     public static final String GRANG_EXCHANGE_SELL_URL = "/action/ge/sell";
     public static final String FIGHT_URL = "/action/fight";
 }

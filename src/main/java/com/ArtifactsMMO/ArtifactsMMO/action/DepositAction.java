@@ -19,7 +19,7 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.*;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class DepositAction implements Action {
+public class DepositAction extends Action {
     private final WebClient webClient;
 
     public Character deposit(Item item, int quantity) {

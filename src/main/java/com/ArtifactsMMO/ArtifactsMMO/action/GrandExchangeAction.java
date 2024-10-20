@@ -4,16 +4,18 @@ import com.ArtifactsMMO.ArtifactsMMO.model.Action;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.Item;
 import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.CommonApiWrapper;
+import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.GrandExchangeApiResponse;
 import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.GrandExchangeApiWrapper;
+import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.GrandExchangeListApiWrapper;
 import com.ArtifactsMMO.ArtifactsMMO.utils.BodyPayload;
 import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.*;
@@ -21,7 +23,7 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.*;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class GrandExchangeAction implements Action {
+public class GrandExchangeAction extends Action {
     private final WebClient webClient;
     private final WebClient baseWebClient;
 
@@ -53,31 +55,50 @@ public class GrandExchangeAction implements Action {
     public int getItemPrice(Item item) {
         log.info("Getting GrandExchange price for {}", item.getName());
 
-        var grandExchangegResponse = baseWebClient.get()
-                .uri(GRAND_EXCHANGE_GET_PRICE_URL + item.getCode())
+        var grandExchangeResponse = baseWebClient.get()
+                .uri(GRAND_EXCHANGE_URL + "/" +item.getCode())
                 .retrieve()
                 .bodyToMono(GrandExchangeApiWrapper.class)
                 .map(GrandExchangeApiWrapper::getData)
                 .block();
 
-        return grandExchangegResponse.getSellPrice();
+        return grandExchangeResponse.getSellPrice();
     }
 
     public int getItemMaxQuantity(Item item) {
         log.info("Getting GrandExchange max sell quantity for {}", item.getName());
 
-        var grandExchangegResponse = baseWebClient.get()
-                .uri(GRAND_EXCHANGE_GET_PRICE_URL + item.getCode())
+        var grandExchangeResponse = baseWebClient.get()
+                .uri(GRAND_EXCHANGE_URL + "/" +item.getCode())
                 .retrieve()
                 .bodyToMono(GrandExchangeApiWrapper.class)
                 .map(GrandExchangeApiWrapper::getData)
                 .block();
-        log.info("grandExchangegResponse: {}", grandExchangegResponse);
 
-        return grandExchangegResponse.getMaxQuantity();
+        return grandExchangeResponse.getMaxQuantity();
     }
 
     private int getQuantityToSell(int quantityAvailable, int maxQuantity) {
         return Math.min(quantityAvailable, maxQuantity);
+    }
+
+    public List<GrandExchangeApiResponse> getAllGrandExchangeItemsPrice() {
+        var result = new ArrayList<GrandExchangeApiResponse>();
+        for(int i = 1; i < 4; i++) {
+            var grandExchangeResponse = baseWebClient.get()
+                    .uri(GRAND_EXCHANGE_URL + "?page=" + i + "&size=100")
+                    .retrieve()
+                    .bodyToMono(GrandExchangeListApiWrapper.class)
+                    .map(GrandExchangeListApiWrapper::getData)
+                    .block();
+            result.addAll(grandExchangeResponse);
+            log.info("All items in grand exchange : {}", result);
+            try {
+                Thread.sleep(20);
+            } catch (Exception e) {
+                log.error("Error while sleeping inbetween grand exchange list api calls", e);
+            }
+        }
+        return result;
     }
 }

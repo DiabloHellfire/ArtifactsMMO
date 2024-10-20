@@ -19,7 +19,7 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.RECYCLE_URL;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class RecycleAction implements Action {
+public class RecycleAction extends Action {
     private final WebClient webClient;
     public Character recycle(Item item, Character character) {
         var quantity = character.getInventoryQuantity(item);

@@ -20,7 +20,7 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.MOVEMENT_URL;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MovementAction implements Action {
+public class MovementAction extends Action {
     private final WebClient webClient;
     public Character move(Location location, Character character) {
         if(!isAlreadyAtLocation(location, character)) {

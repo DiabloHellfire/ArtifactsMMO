@@ -1,4 +1,8 @@
 package com.ArtifactsMMO.ArtifactsMMO.model;
 
-public interface Action {
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class Action {
 }
