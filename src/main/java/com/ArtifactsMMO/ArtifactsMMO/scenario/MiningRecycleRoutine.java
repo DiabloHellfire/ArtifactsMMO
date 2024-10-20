@@ -35,6 +35,7 @@ public class MiningRecycleRoutine {
 
         // Wait for character to be able to take requests
         CooldownUtils.cooldown(1);
+
         // Move to copper rocks
         var characterReponse = movementAction.move(Location.of(2,0), character);
         if(characterReponse != null) {

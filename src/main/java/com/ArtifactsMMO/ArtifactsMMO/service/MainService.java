@@ -31,8 +31,26 @@ public class MainService {
         var character = characterService.getCharacter();
 
         if(character.getName().contains("Mining")) { // Farming character
-            while(true) {
-                miningGrandExchangeRoutine.copperOreRoutine();
+            if(character.getName().contains("2")) { // Farmer 2
+                log.info("Mining & selling copper indefinitly");
+                while (true) {
+                    miningGrandExchangeRoutine.copperRoutine();
+                }
+            } else if (character.getName().contains("3")) { // Farmer 3
+                log.info("Mining, crafting & selling copper dagger indefinitly");
+                while (true) {
+                    miningGrandExchangeRoutine.copperDaggerRoutine();
+                }
+            } else if (character.getName().contains("4")) { // Farmer 4
+                log.info("Mining, crafting & selling copper boots indefinitly");
+                while (true) {
+                    miningGrandExchangeRoutine.copperBootsRoutine();
+                }
+            } else { // Farmer 1
+                log.info("Mining & selling copper rocks indefinitly");
+                while (true) {
+                    miningGrandExchangeRoutine.copperOreRoutine();
+                }
             }
         } else { // Main character
             if (times < 0) {
