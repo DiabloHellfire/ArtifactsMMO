@@ -4,6 +4,8 @@ import com.ArtifactsMMO.ArtifactsMMO.model.Action;
 import com.ArtifactsMMO.ArtifactsMMO.model.Location;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.PlaceBase;
+import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.CommonApiResponse;
+import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.CommonApiWrapper;
 import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.GatheringWrapper;
 import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.MovementWrapper;
 import com.ArtifactsMMO.ArtifactsMMO.utils.BodyPayload;
@@ -26,23 +28,26 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.MOVEMENT_URL;
 public class GatheringAction implements Action {
     private final WebClient webClient;
 
-    public void gather(int times) {
-        gather(times, "");
+    public Character gather(int times) {
+        return gather(times, "");
     }
 
-    public void gather(int times, String item) {
+    public Character gather(int times, String item) {
         log.info("Gathering {} {}", times, item);
+        Character character = null;
         for(int i = 0; i < times; i++) {
             var gatheringResponse = webClient.post()
                     .uri(GATHER_URL)
                     .bodyValue("")
                     .retrieve()
-                    .bodyToMono(GatheringWrapper.class)
-                    .map(GatheringWrapper::getData)
+                    .bodyToMono(CommonApiWrapper.class)
+                    .map(CommonApiWrapper::getData)
                     .block();
 
             // Process cooldown
             CooldownUtils.cooldown(gatheringResponse.getCooldown());
+            character = gatheringResponse.getCharacter();
         }
+        return character;
     }
 }

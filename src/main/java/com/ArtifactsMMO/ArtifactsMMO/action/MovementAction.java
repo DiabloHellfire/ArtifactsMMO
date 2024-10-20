@@ -4,6 +4,7 @@ import com.ArtifactsMMO.ArtifactsMMO.model.Action;
 import com.ArtifactsMMO.ArtifactsMMO.model.Location;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.PlaceBase;
+import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.CommonApiWrapper;
 import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.MovementWrapper;
 import com.ArtifactsMMO.ArtifactsMMO.utils.BodyPayload;
 import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
@@ -21,32 +22,34 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.MOVEMENT_URL;
 @RequiredArgsConstructor
 public class MovementAction implements Action {
     private final WebClient webClient;
-    public void move(Location location, Character character) {
+    public Character move(Location location, Character character) {
         if(!isAlreadyAtLocation(location, character)) {
-            move(location.getX(), location.getY());
-            character.setLocation(location);
+            return move(location.getX(), location.getY());
         } else {
             log.info("Player already at location [{},{}]", location.getX(), location.getY());
         }
+        return null;
     }
 
-    public void move(PlaceBase place, Character character) {
-        move(place.getLocation(), character);
+    public Character move(PlaceBase place, Character character) {
+        return move(place.getLocation(), character);
     }
 
-    private void move(int x, int y) {
+    private Character move(int x, int y) {
         log.info("Moving to location [{},{}]", x, y);
 
         var movementResponse = webClient.post()
                 .uri(MOVEMENT_URL)
                 .bodyValue(BodyPayload.getBodyPayload(Map.of("x",x,"y",y)))
                 .retrieve()
-                .bodyToMono(MovementWrapper.class)
-                .map(MovementWrapper::getData)
+                .bodyToMono(CommonApiWrapper.class)
+                .map(CommonApiWrapper::getData)
                 .block();
 
         // Process cooldown
         CooldownUtils.cooldown(movementResponse.getCooldown());
+
+        return movementResponse.getCharacter();
     }
 
     private boolean isAlreadyAtLocation(Location location, Character character) {

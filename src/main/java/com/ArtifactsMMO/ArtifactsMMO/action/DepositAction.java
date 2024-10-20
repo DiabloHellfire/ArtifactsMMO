@@ -1,6 +1,7 @@
 package com.ArtifactsMMO.ArtifactsMMO.action;
 
 import com.ArtifactsMMO.ArtifactsMMO.model.Action;
+import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.Item;
 import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.CommonApiWrapper;
 import com.ArtifactsMMO.ArtifactsMMO.utils.BodyPayload;
@@ -21,7 +22,7 @@ import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.*;
 public class DepositAction implements Action {
     private final WebClient webClient;
 
-    public void deposit(Item item, int quantity) {
+    public Character deposit(Item item, int quantity) {
         if(quantity > 0) {
             log.info("Depositing {} {}", quantity, item.getName());
             var craftingResponse = webClient.post()
@@ -34,24 +35,28 @@ public class DepositAction implements Action {
 
             // Process cooldown
             CooldownUtils.cooldown(craftingResponse.getCooldown());
+
+            return craftingResponse.getCharacter();
         }
+        return null;
     }
 
-    public void depositGold(int quantity) {
+    public Character depositGold(int quantity) {
         if(quantity > 0) {
             log.info("Depositing {} gold", quantity);
-            for (int i = 0; i < quantity; i++) {
-                var craftingResponse = webClient.post()
-                        .uri(DEPOSIT_GOLD_URL)
-                        .bodyValue(BodyPayload.getBodyPayload(Map.of("quantity", quantity)))
-                        .retrieve()
-                        .bodyToMono(CommonApiWrapper.class)
-                        .map(CommonApiWrapper::getData)
-                        .block();
+            var craftingResponse = webClient.post()
+                    .uri(DEPOSIT_GOLD_URL)
+                    .bodyValue(BodyPayload.getBodyPayload(Map.of("quantity", quantity)))
+                    .retrieve()
+                    .bodyToMono(CommonApiWrapper.class)
+                    .map(CommonApiWrapper::getData)
+                    .block();
 
-                // Process cooldown
-                CooldownUtils.cooldown(craftingResponse.getCooldown());
-            }
+            // Process cooldown
+            CooldownUtils.cooldown(craftingResponse.getCooldown());
+
+            return craftingResponse.getCharacter();
         }
+        return null;
     }
 }
