@@ -1,11 +1,12 @@
 package com.ArtifactsMMO.ArtifactsMMO.service;
 
+import com.ArtifactsMMO.ArtifactsMMO.action.CookingAction;
+import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperBoots;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperDagger;
+import com.ArtifactsMMO.ArtifactsMMO.model.item.Iron;
+import com.ArtifactsMMO.ArtifactsMMO.model.mob.Cow;
 import com.ArtifactsMMO.ArtifactsMMO.model.mob.RedSlime;
-import com.ArtifactsMMO.ArtifactsMMO.scenario.FightingLoopRoutine;
-import com.ArtifactsMMO.ArtifactsMMO.scenario.MiningBankRoutine;
-import com.ArtifactsMMO.ArtifactsMMO.scenario.MiningGrandExchangeRoutine;
-import com.ArtifactsMMO.ArtifactsMMO.scenario.MiningRecycleRoutine;
+import com.ArtifactsMMO.ArtifactsMMO.scenario.*;
 import com.ArtifactsMMO.ArtifactsMMO.utils.ScenarioDeciderUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,12 @@ public class MainService {
     private final MiningGrandExchangeRoutine miningGrandExchangeRoutine;
     private final MiningRecycleRoutine miningRecycleRoutine;
     private final CopperDagger copperDagger;
+    private final CopperBoots copperBoots;
     private final FightingLoopRoutine fightingLoopRoutine;
     private final RedSlime redSlime;
     private final ScenarioDeciderUtils scenarioDeciderUtils;
+    private final ChickenCookRoutine chickenCookRoutine;
+    private final Cow cow;
 
     public void main() {
         // Execute indefinitly
@@ -35,19 +39,21 @@ public class MainService {
         if(character.getName().contains("Mining")) { // Farming character
             while(true) {
                 var itemsToFarm = scenarioDeciderUtils.decideItemsForScenario();
-                if(character.getName().contains("2") || character.getName().contains("3")) { // Farmer 2 and 3
-                    if(!itemsToFarm.isEmpty()) {
-                        scenarioDeciderUtils.getScenarioFromItem(itemsToFarm.get(0)).run();
-                    } else {
-                        scenarioDeciderUtils.getScenarioFromItem(null).run();
-                    }
-                } else { // Farmer 1 and 4
-                    if(itemsToFarm.size() >= 2) {
-                        scenarioDeciderUtils.getScenarioFromItem(itemsToFarm.get(1)).run();
-                    } else {
-                        scenarioDeciderUtils.getScenarioFromItem(null).run();
-                    }
-                }
+                chickenCookRoutine.chickenCookRoutine();
+                // TODO : Activate this to farm most profitable items
+//                if(character.getName().contains("2") || character.getName().contains("3")) { // Farmer 2 and 3
+//                    if(!itemsToFarm.isEmpty()) {
+//                        scenarioDeciderUtils.getScenarioFromItem(itemsToFarm.get(0)).run();
+//                    } else {
+//                        scenarioDeciderUtils.getScenarioFromItem(null).run();
+//                    }
+//                } else { // Farmer 1 and 4
+//                    if(itemsToFarm.size() >= 2) {
+//                        scenarioDeciderUtils.getScenarioFromItem(itemsToFarm.get(1)).run();
+//                    } else {
+//                        scenarioDeciderUtils.getScenarioFromItem(null).run();
+//                    }
+//                }
             }
 
 //            if(character.getName().contains("2")) { // Farmer 2
@@ -75,8 +81,9 @@ public class MainService {
             if (times < 0) {
                 log.info("Mining copper rocks indefinitly");
                 while (true) {
-//                    fightingLoopRoutine.fightingLoop(redSlime);
-                    miningRecycleRoutine.copperRoutine(copperDagger);
+                    fightingLoopRoutine.fightingLoop(cow);
+                    //miningRecycleRoutine.copperRoutine(copperBoots);
+//                    scenarioDeciderUtils.getScenarioFromItem(new Iron()).run();
                 }
             } else {
                 for (int i = 0; i < times; i++) {

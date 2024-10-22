@@ -8,6 +8,7 @@ import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperDagger;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.Item;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.Bank;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.Forge;
+import com.ArtifactsMMO.ArtifactsMMO.model.place.GearCrafting;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.WeaponCrafting;
 import com.ArtifactsMMO.ArtifactsMMO.service.CharacterService;
 import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
@@ -28,19 +29,22 @@ public class MiningRecycleRoutine extends Scenario {
     private final MovementAction movementAction;
     private final GatheringAction gatheringAction;
     private final CharacterService characterService;
+    private final GearCrafting gearCrafting;
 
     public MiningRecycleRoutine(@Autowired Forge forge,
                                 @Autowired Copper copper,
                                 @Autowired WeaponCrafting weaponCrafting,
                                 @Autowired MovementAction movementAction,
                                 @Autowired GatheringAction gatheringAction,
-                                @Autowired CharacterService characterService) {
+                                @Autowired CharacterService characterService,
+                                @Autowired GearCrafting gearCrafting) {
         this.forge = forge;
         this.copper = copper;
         this.weaponCrafting = weaponCrafting;
         this.movementAction = movementAction;
         this.gatheringAction = gatheringAction;
         this.characterService = characterService;
+        this.gearCrafting = gearCrafting;
         this.scenarioName = "miningRecycleRoutine";
     }
     
@@ -78,7 +82,7 @@ public class MiningRecycleRoutine extends Scenario {
         }
 
         // Move to weapon workshop
-        characterReponse = movementAction.move(weaponCrafting, character);
+        characterReponse = movementAction.move(gearCrafting, character);
         if(characterReponse != null) {
             character = characterReponse;
         }

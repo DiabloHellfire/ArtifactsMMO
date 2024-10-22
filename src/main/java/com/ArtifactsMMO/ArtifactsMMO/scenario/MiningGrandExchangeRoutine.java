@@ -3,10 +3,7 @@ package com.ArtifactsMMO.ArtifactsMMO.scenario;
 import com.ArtifactsMMO.ArtifactsMMO.action.*;
 import com.ArtifactsMMO.ArtifactsMMO.model.Location;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
-import com.ArtifactsMMO.ArtifactsMMO.model.item.Copper;
-import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperBoots;
-import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperDagger;
-import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperOre;
+import com.ArtifactsMMO.ArtifactsMMO.model.item.*;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.*;
 import com.ArtifactsMMO.ArtifactsMMO.service.CharacterService;
 import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
@@ -36,6 +33,7 @@ public class MiningGrandExchangeRoutine extends Scenario {
     private final CopperRocks copperRocks;
     private final WeaponCrafting weaponCrafting;
     private final GearCrafting gearCrafting;
+    private List<PlaceBase> places;
 
     @Autowired
     public MiningGrandExchangeRoutine(GrandExchange grandExchange,
@@ -65,138 +63,14 @@ public class MiningGrandExchangeRoutine extends Scenario {
         this.weaponCrafting = weaponCrafting;
         this.gearCrafting = gearCrafting;
         this.scenarioName = "miningGrandExchangeRoutine";
-    }
-
-    public void copperOreRoutine() {
-        log.info("Beginning copper ore grand exchange mining routine");
-
-        // Retrieve our character informations
-        var character = characterService.getCharacter();
-
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
-        // Move to copper rocks
-        var characterReponse = movementAction.move(copperRocks, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Mine copper ore until inventory is full
-        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Move to grand exchange
-        characterReponse = movementAction.move(grandExchange, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Sell copper ores to grand exchange
-        characterReponse = grandExchange.getAction(GrandExchangeAction.class).sell(copperOre, character.getInventoryQuantity(copperOre));
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Move to bank & deposit gold
-        characterReponse = movementAction.move(bank, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-        bank.getAction(DepositAction.class).depositGold(character.getGold());
-
-        log.info("Copper ore grand exchange mining routine finished");
-    }
-
-    public void copperRoutine() {
-        log.info("Beginning copper grand exchange mining routine");
-
-        // Retrieve our character informations
-        var character = characterService.getCharacter();
-
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
-        // Move to copper rocks
-        var characterReponse = movementAction.move(copperRocks, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Mine copper ore until inventory is full
-        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Move to forge
-        characterReponse = movementAction.move(forge, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Smelt copper ores
-        characterReponse = forge.getAction(CraftingAction.class).craft(copper, ItemsToCraftUtils.getItemsCraftable(copper,character.getInventoryQuantity("copper_ore")));
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Move to grand exchange
-        characterReponse = movementAction.move(grandExchange, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Sell copper to grand exchange
-        characterReponse = grandExchange.getAction(GrandExchangeAction.class).sell(copper, character.getInventoryQuantity(copper));
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Move to bank & deposit gold
-        characterReponse = movementAction.move(bank, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-        bank.getAction(DepositAction.class).depositGold(character.getGold());
-
-        log.info("Copper grand exchange mining routine finished");
+        this.places = List.of(new CopperRocks(), new IronRocks());
     }
 
     public void copperDaggerRoutine() {
         log.info("Beginning copper dagger grand exchange mining routine");
 
-        // Retrieve our character informations
-        var character = characterService.getCharacter();
-
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
-        // Move to copper rocks
-        var characterReponse = movementAction.move(copperRocks, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Mine copper ore until inventory is full
-        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Move to forge
-        characterReponse = movementAction.move(forge, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Smelt copper ores
-        characterReponse = forge.getAction(CraftingAction.class).craft(copper, ItemsToCraftUtils.getItemsCraftable(copper,character.getInventoryQuantity("copper_ore")));
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        Character characterReponse = null;
+        var character = mineCopperIngot();
 
         // Move to weapon workshop
         characterReponse = movementAction.move(weaponCrafting, character);
@@ -237,35 +111,8 @@ public class MiningGrandExchangeRoutine extends Scenario {
     public void copperBootsRoutine() {
         log.info("Beginning copper boots grand exchange mining routine");
 
-        // Retrieve our character informations
-        var character = characterService.getCharacter();
-
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
-        // Move to copper rocks
-        var characterReponse = movementAction.move(copperRocks, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Mine copper ore until inventory is full
-        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Move to forge
-        characterReponse = movementAction.move(forge, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
-
-        // Smelt copper ores
-        characterReponse = forge.getAction(CraftingAction.class).craft(copper, ItemsToCraftUtils.getItemsCraftable(copper,character.getInventoryQuantity("copper_ore")));
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        Character characterReponse = null;
+        var character = mineCopperIngot();
 
         // Move to gear workshop
         characterReponse = movementAction.move(gearCrafting, character);
@@ -301,5 +148,144 @@ public class MiningGrandExchangeRoutine extends Scenario {
         bank.getAction(DepositAction.class).depositGold(character.getGold());
 
         log.info("Copper dagger grand exchange mining routine finished");
+    }
+
+    public void itemOreRoutine(Item item) { // Iron or Copper
+        log.info("Beginning {} grand exchange mining routine", item.getCode());
+
+        // Retrieve our character informations
+        var character = characterService.getCharacter();
+
+        // Wait for character to be able to take requests
+        CooldownUtils.cooldown(1);
+
+        var place = places.stream()
+                .filter(p -> p.getName().equals(item.getCode()+"_rocks"))
+                .findFirst()
+                .get();
+
+        // Move to rocks
+        var characterReponse = movementAction.move(place.getLocation(), character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Mine ore until inventory is full
+        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Move to grand exchange
+        characterReponse = movementAction.move(grandExchange, character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Sell ores to grand exchange
+        characterReponse = grandExchange.getAction(GrandExchangeAction.class).sell(item.getCode()+"_ore", character.getInventoryQuantity(item.getCode()+"_ore"));
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Move to bank & deposit gold
+        characterReponse = movementAction.move(bank, character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+        bank.getAction(DepositAction.class).depositEverythingButOresOf(character, item);
+        bank.getAction(DepositAction.class).depositGold(character.getGold());
+
+        log.info("Iron ore grand exchange mining routine finished");
+    }
+
+    public void materialRoutine(Item item) { // Iron or Copper
+        log.info("Beginning {} grand exchange mining routine", item.getCode());
+
+        // Retrieve our character informations
+        var character = characterService.getCharacter();
+
+        // Wait for character to be able to take requests
+        CooldownUtils.cooldown(1);
+
+        var place = places.stream()
+                .filter(p -> p.getName().equals(item.getCode()+"_rocks"))
+                .findFirst()
+                .get();
+
+        // Move to copper rocks
+        var characterReponse = movementAction.move(place.getLocation(), character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Mine ore until inventory is full
+        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Move to forge
+        characterReponse = movementAction.move(forge, character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Smelt ores
+        characterReponse = forge.getAction(CraftingAction.class).craft(item, ItemsToCraftUtils.getItemsCraftable(item,character.getInventoryQuantity(item.getCode()+"_ore")));
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Move to grand exchange
+        characterReponse = movementAction.move(grandExchange, character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Sell material to grand exchange
+        characterReponse = grandExchange.getAction(GrandExchangeAction.class).sell(item.getCode(), character.getInventoryQuantity(item.getCode()));
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Move to bank & deposit gold
+        characterReponse = movementAction.move(bank, character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+        bank.getAction(DepositAction.class).depositEverythingButOresOf(character, item);
+        bank.getAction(DepositAction.class).depositGold(character.getGold());
+
+        log.info("Iron ore grand exchange mining routine finished");
+    }
+
+    private Character mineCopperIngot() {
+        // Retrieve our character informations
+        var character = characterService.getCharacter();
+
+        // Wait for character to be able to take requests
+        CooldownUtils.cooldown(1);
+
+        // Move to copper rocks
+        var characterReponse = movementAction.move(copperRocks, character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Mine copper ore until inventory is full
+        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Move to forge
+        characterReponse = movementAction.move(forge, character);
+        if(characterReponse != null) {
+            character = characterReponse;
+        }
+
+        // Smelt copper ores
+        return forge.getAction(CraftingAction.class).craft(copper, ItemsToCraftUtils.getItemsCraftable(copper,character.getInventoryQuantity("copper_ore")));
     }
 }

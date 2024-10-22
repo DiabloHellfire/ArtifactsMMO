@@ -4,19 +4,18 @@ import com.ArtifactsMMO.ArtifactsMMO.action.CraftingAction;
 import com.ArtifactsMMO.ArtifactsMMO.action.DepositAction;
 import com.ArtifactsMMO.ArtifactsMMO.action.GatheringAction;
 import com.ArtifactsMMO.ArtifactsMMO.action.MovementAction;
-import com.ArtifactsMMO.ArtifactsMMO.model.Location;
-import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.Copper;
-import com.ArtifactsMMO.ArtifactsMMO.model.place.Bank;
-import com.ArtifactsMMO.ArtifactsMMO.model.place.Forge;
+import com.ArtifactsMMO.ArtifactsMMO.model.item.Item;
+import com.ArtifactsMMO.ArtifactsMMO.model.place.*;
 import com.ArtifactsMMO.ArtifactsMMO.service.CharacterService;
 import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
 import com.ArtifactsMMO.ArtifactsMMO.utils.ItemsToCraftUtils;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Slf4j
 @Component
@@ -28,6 +27,7 @@ public class MiningBankRoutine extends Scenario {
     private final MovementAction movementAction;
     private final GatheringAction gatheringAction;
     private final CharacterService characterService;
+    private final List<PlaceBase> places;
 
     @Autowired
     public MiningBankRoutine(Forge forge,
@@ -43,10 +43,11 @@ public class MiningBankRoutine extends Scenario {
         this.gatheringAction = gatheringAction;
         this.characterService = characterService;
         this.scenarioName = "miningBankRoutine";
+        this.places = List.of(new CopperRocks(), new IronRocks());
     }
 
-    public void copperRoutine() {
-        log.info("Beginning copper mining routine");
+    public void itemRoutine(Item item) {
+        log.info("Beginning {} mining routine", item.getCode()+"_ore");
 
         // Retrieve our character informations
         var character = characterService.getCharacter();
@@ -54,13 +55,18 @@ public class MiningBankRoutine extends Scenario {
         // Wait for character to be able to take requests
         CooldownUtils.cooldown(1);
 
-        // Move to copper rocks
-        var characterReponse = movementAction.move(Location.of(2,0), character);
+        var place = places.stream()
+                .filter(p -> p.getName().equals(item.getCode()+"_rocks"))
+                .findFirst()
+                .get();
+
+        // Move to mining spot
+        var characterReponse = movementAction.move(place.getLocation(), character);
         if(characterReponse != null) {
             character = characterReponse;
         }
 
-        // Mine copper rocks until inventory is full
+        // Mine rocks until inventory is full
         characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
         if(characterReponse != null) {
             character = characterReponse;
@@ -72,8 +78,8 @@ public class MiningBankRoutine extends Scenario {
             character = characterReponse;
         }
 
-        // Smelt copper ores
-        characterReponse = forge.getAction(CraftingAction.class).craft(copper, ItemsToCraftUtils.getItemsCraftable(copper,character.getInventoryQuantity("copper_ore")));
+        // Smelt ores
+        characterReponse = forge.getAction(CraftingAction.class).craft(item, ItemsToCraftUtils.getItemsCraftable(item,character.getInventoryQuantity(item.getCode()+"_ore")));
         if(characterReponse != null) {
             character = characterReponse;
         }
@@ -84,14 +90,14 @@ public class MiningBankRoutine extends Scenario {
             character = characterReponse;
         }
 
-        // Store copper bars in bank
-        characterReponse = bank.getAction(DepositAction.class).deposit(copper, character.getInventoryQuantity(copper));
+        // Store bars in bank
+        characterReponse = bank.getAction(DepositAction.class).depositEverythingButOresOf(character, item);
         if(characterReponse != null) {
             character = characterReponse;
         }
 
         bank.getAction(DepositAction.class).depositGold(character.getGold());
 
-        log.info("Copper mining routine finished");
+        log.info("{} mining routine finished", item.getCode()+"_ore");
     }
 }

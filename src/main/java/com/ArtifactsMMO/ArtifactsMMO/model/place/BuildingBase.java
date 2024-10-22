@@ -14,7 +14,7 @@ import java.util.Optional;
 public class BuildingBase extends PlaceBase {
     List<Action> actions;
     public BuildingBase(String name, Location location) {
-        super(name, location);
+        super(name, location, new ArrayList<>());
         this.actions = new ArrayList<>();
     }
 

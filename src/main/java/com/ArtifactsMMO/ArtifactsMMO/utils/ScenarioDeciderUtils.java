@@ -5,12 +5,10 @@ import com.ArtifactsMMO.ArtifactsMMO.model.item.*;
 import com.ArtifactsMMO.ArtifactsMMO.scenario.MiningBankRoutine;
 import com.ArtifactsMMO.ArtifactsMMO.scenario.MiningGrandExchangeRoutine;
 import com.ArtifactsMMO.ArtifactsMMO.scenario.Scenario;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +23,10 @@ public class ScenarioDeciderUtils {
     private List<Scenario> scenarii;
 
     public ScenarioDeciderUtils(@Autowired GrandExchangeAction grandExchangeAction,
-                                @Autowired Copper copper,
-                                @Autowired CopperBoots copperBoots,
-                                @Autowired CopperDagger copperDagger,
-                                @Autowired CopperOre copperOre,
                                 @Autowired MiningGrandExchangeRoutine miningGrandExchangeRoutine,
                                 @Autowired MiningBankRoutine miningBankRoutine) {
         this.grandExchangeAction = grandExchangeAction;
-        this.sellableItems = List.of(copper, copperBoots, copperDagger, copperOre);
+        this.sellableItems = List.of(new Copper(), new CopperBoots(), new CopperDagger(), new CopperOre(), new IronOre(), new Iron());
         this.scenarii = List.of(miningGrandExchangeRoutine, miningBankRoutine);
     }
 
@@ -79,18 +73,18 @@ public class ScenarioDeciderUtils {
 
     public Runnable getScenarioFromItem(Item item) {
         if(null == item) { // Nothing is interesting to sell. Mine for the bank
-            return ((MiningBankRoutine) getScenarioFromName("miningBankRoutine"))::copperRoutine;
+            return () -> ((MiningBankRoutine) getScenarioFromName("miningBankRoutine")).itemRoutine(new Iron());
         }
         return switch (item.getCode()) {
-            case "copper" ->
-                    ((MiningGrandExchangeRoutine) getScenarioFromName("miningGrandExchangeRoutine"))::copperRoutine;
+            case "copper","iron" ->
+                    () -> ((MiningGrandExchangeRoutine) getScenarioFromName("miningGrandExchangeRoutine")).materialRoutine(item);
             case "copper_boots" ->
                     ((MiningGrandExchangeRoutine) getScenarioFromName("miningGrandExchangeRoutine"))::copperBootsRoutine;
             case "copper_dagger" ->
                     ((MiningGrandExchangeRoutine) getScenarioFromName("miningGrandExchangeRoutine"))::copperDaggerRoutine;
-            case "copper_ore" ->
-                    ((MiningGrandExchangeRoutine) getScenarioFromName("miningGrandExchangeRoutine"))::copperOreRoutine;
-            default -> ((MiningBankRoutine) getScenarioFromName("miningBankRoutine"))::copperRoutine;
+            case "copper_ore","iron_ore" ->
+                    () -> ((MiningGrandExchangeRoutine) getScenarioFromName("miningGrandExchangeRoutine")).itemOreRoutine(item);
+            default -> () -> ((MiningBankRoutine) getScenarioFromName("miningBankRoutine")).itemRoutine(item);
         };
     }
 

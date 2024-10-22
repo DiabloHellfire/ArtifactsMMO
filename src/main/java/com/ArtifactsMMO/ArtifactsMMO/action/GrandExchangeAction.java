@@ -52,6 +52,31 @@ public class GrandExchangeAction extends Action {
         return character;
     }
 
+    public Character sell(String itemCode, int quantityAvailable) {
+        log.info("Selling {} {} to grand exchange", quantityAvailable, itemCode);
+        Character character = null;
+
+        var grandExchangeItemMaxQuantity = getItemMaxQuantity(itemCode);
+
+        while(getQuantityToSell(quantityAvailable, grandExchangeItemMaxQuantity) > 0) {
+            var grandExchangeItemPrice = getItemPrice(itemCode);
+            var grandExchangeResponse = webClient.post()
+                    .uri(GRANG_EXCHANGE_SELL_URL)
+                    .bodyValue(BodyPayload.getBodyPayload(Map.of("code", itemCode, "quantity", getQuantityToSell(quantityAvailable, grandExchangeItemMaxQuantity), "price", grandExchangeItemPrice)))
+                    .retrieve()
+                    .bodyToMono(CommonApiWrapper.class)
+                    .map(CommonApiWrapper::getData)
+                    .block();
+            quantityAvailable -= getQuantityToSell(quantityAvailable, grandExchangeItemMaxQuantity);
+
+            // Process cooldown
+            CooldownUtils.cooldown(grandExchangeResponse.getCooldown());
+            character = grandExchangeResponse.getCharacter();
+        }
+
+        return character;
+    }
+
     public int getItemPrice(Item item) {
         log.info("Getting GrandExchange price for {}", item.getName());
 
@@ -65,11 +90,37 @@ public class GrandExchangeAction extends Action {
         return grandExchangeResponse.getSellPrice();
     }
 
+    public int getItemPrice(String itemCode) {
+        log.info("Getting GrandExchange price for {}", itemCode);
+
+        var grandExchangeResponse = baseWebClient.get()
+                .uri(GRAND_EXCHANGE_URL + "/" +itemCode)
+                .retrieve()
+                .bodyToMono(GrandExchangeApiWrapper.class)
+                .map(GrandExchangeApiWrapper::getData)
+                .block();
+
+        return grandExchangeResponse.getSellPrice();
+    }
+
     public int getItemMaxQuantity(Item item) {
         log.info("Getting GrandExchange max sell quantity for {}", item.getName());
 
         var grandExchangeResponse = baseWebClient.get()
                 .uri(GRAND_EXCHANGE_URL + "/" +item.getCode())
+                .retrieve()
+                .bodyToMono(GrandExchangeApiWrapper.class)
+                .map(GrandExchangeApiWrapper::getData)
+                .block();
+
+        return grandExchangeResponse.getMaxQuantity();
+    }
+
+    public int getItemMaxQuantity(String itemCode) {
+        log.info("Getting GrandExchange max sell quantity for {}", itemCode);
+
+        var grandExchangeResponse = baseWebClient.get()
+                .uri(GRAND_EXCHANGE_URL + "/" +itemCode)
                 .retrieve()
                 .bodyToMono(GrandExchangeApiWrapper.class)
                 .map(GrandExchangeApiWrapper::getData)
