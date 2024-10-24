@@ -1,12 +1,12 @@
 package com.ArtifactsMMO.ArtifactsMMO.service;
 
-import com.ArtifactsMMO.ArtifactsMMO.action.CookingAction;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperBoots;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.CopperDagger;
-import com.ArtifactsMMO.ArtifactsMMO.model.item.Iron;
 import com.ArtifactsMMO.ArtifactsMMO.model.mob.Cow;
 import com.ArtifactsMMO.ArtifactsMMO.model.mob.RedSlime;
+import com.ArtifactsMMO.ArtifactsMMO.model.mob.Wolf;
 import com.ArtifactsMMO.ArtifactsMMO.scenario.*;
+import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
 import com.ArtifactsMMO.ArtifactsMMO.utils.ScenarioDeciderUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,68 +27,65 @@ public class MainService {
     private final ScenarioDeciderUtils scenarioDeciderUtils;
     private final ChickenCookRoutine chickenCookRoutine;
     private final Cow cow;
+    private final DepositEverythingRoutine depositEverythingRoutine;
+    private final AshTreeBankRoutine ashTreeBankRoutine;
+    private final SpruceTreeBankRoutine spruceTreeBankRoutine;
+    private final HardwoodPlankBankRoutine hardwoodPlankBankRoutine;
 
     public void main() {
         // Execute indefinitly
         main(-1);
     }
 
+    private void farmers() {
+        while(true) {
+            var character = characterService.getCharacter();
+            if(character.getWoodcuttingLevel() < 20)
+                spruceTreeBankRoutine.farmSpruceWood();
+            else {
+                hardwoodPlankBankRoutine.farmBirchWood();
+            }
+//                var itemsToFarm = scenarioDeciderUtils.decideItemsForScenario();
+//                if(!itemsToFarm.isEmpty()) {
+//                    scenarioDeciderUtils.getScenarioFromItem(itemsToFarm.get(0)).run();
+//                } else {
+//                    scenarioDeciderUtils.getScenarioFromItem(null).run();
+//                }
+        }
+    }
+
+    private void mainCharacter(int times) {
+        if (times < 0) {
+            log.info("Mining copper rocks indefinitly");
+            while (true) {
+                try {
+                    fightingLoopRoutine.fightingLoop(new Wolf());
+                } catch(Exception e) {
+                    depositEverythingRoutine.depositEverything();
+                }
+                //miningRecycleRoutine.copperRoutine(copperBoots);
+//                    scenarioDeciderUtils.getScenarioFromItem(new Iron()).run();
+            }
+        } else {
+            for (int i = 0; i < times; i++) {
+                miningRecycleRoutine.copperRoutine(copperDagger);
+            }
+        }
+    }
+
     public void main(int times) {
         var character = characterService.getCharacter();
 
-        if(character.getName().contains("Mining")) { // Farming character
-            while(true) {
-                var itemsToFarm = scenarioDeciderUtils.decideItemsForScenario();
-                chickenCookRoutine.chickenCookRoutine();
-                // TODO : Activate this to farm most profitable items
-//                if(character.getName().contains("2") || character.getName().contains("3")) { // Farmer 2 and 3
-//                    if(!itemsToFarm.isEmpty()) {
-//                        scenarioDeciderUtils.getScenarioFromItem(itemsToFarm.get(0)).run();
-//                    } else {
-//                        scenarioDeciderUtils.getScenarioFromItem(null).run();
-//                    }
-//                } else { // Farmer 1 and 4
-//                    if(itemsToFarm.size() >= 2) {
-//                        scenarioDeciderUtils.getScenarioFromItem(itemsToFarm.get(1)).run();
-//                    } else {
-//                        scenarioDeciderUtils.getScenarioFromItem(null).run();
-//                    }
-//                }
-            }
-
-//            if(character.getName().contains("2")) { // Farmer 2
-//                log.info("Mining & selling copper indefinitly");
-//                while (true) {
-//                    miningGrandExchangeRoutine.copperRoutine();
-//                }
-//            } else if (character.getName().contains("3")) { // Farmer 3
-//                log.info("Mining, crafting & selling copper dagger indefinitly");
-//                while (true) {
-//                    miningGrandExchangeRoutine.copperDaggerRoutine();
-//                }
-//            } else if (character.getName().contains("4")) { // Farmer 4
-//                log.info("Mining, crafting & selling copper boots indefinitly");
-//                while (true) {
-//                    miningGrandExchangeRoutine.copperBootsRoutine();
-//                }
-//            } else { // Farmer 1
-//                log.info("Mining & selling copper rocks indefinitly");
-//                while (true) {
-//                    miningGrandExchangeRoutine.copperOreRoutine();
-//                }
-//            }
-        } else { // Main character
-            if (times < 0) {
-                log.info("Mining copper rocks indefinitly");
-                while (true) {
-                    fightingLoopRoutine.fightingLoop(cow);
-                    //miningRecycleRoutine.copperRoutine(copperBoots);
-//                    scenarioDeciderUtils.getScenarioFromItem(new Iron()).run();
+        while(true) {
+            try {
+                if(character.getName().contains("Mining")) { // Farming characters
+                    farmers();
+                } else { // Main character
+                    mainCharacter(times);
                 }
-            } else {
-                for (int i = 0; i < times; i++) {
-                    miningRecycleRoutine.copperRoutine(copperDagger);
-                }
+            } catch(Exception e) {
+                log.error("Connexion error",e);
+                CooldownUtils.cooldown(3);
             }
         }
     }

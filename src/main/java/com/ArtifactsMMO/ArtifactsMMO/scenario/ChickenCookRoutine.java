@@ -4,7 +4,9 @@ import com.ArtifactsMMO.ArtifactsMMO.action.CookingAction;
 import com.ArtifactsMMO.ArtifactsMMO.action.DepositAction;
 import com.ArtifactsMMO.ArtifactsMMO.action.FightAction;
 import com.ArtifactsMMO.ArtifactsMMO.action.MovementAction;
+import com.ArtifactsMMO.ArtifactsMMO.model.item.CoockedChicken;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.Egg;
+import com.ArtifactsMMO.ArtifactsMMO.model.item.FriedEggs;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.RawChicken;
 import com.ArtifactsMMO.ArtifactsMMO.model.mob.Chicken;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.Bank;
@@ -57,10 +59,10 @@ public class ChickenCookRoutine extends Scenario {
 
         // Cook chicken
         var rawChickenQuantity = character.getInventoryQuantity(new RawChicken());
-        cooking.getAction(CookingAction.class).cook(new RawChicken(), rawChickenQuantity);
+        cooking.getAction(CookingAction.class).cook(new CoockedChicken(), rawChickenQuantity);
         var eggQuantity = character.getInventoryQuantity(new Egg());
         try { // Prevent the code from breaking if cooking level is not sufficient
-            cooking.getAction(CookingAction.class).cook(new Egg(), eggQuantity);
+            cooking.getAction(CookingAction.class).cook(new FriedEggs(), eggQuantity);
         } catch (Exception e) {
             log.error("Cooking level is not enough to cook eggs", e.getMessage());
         }

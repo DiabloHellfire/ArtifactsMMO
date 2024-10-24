@@ -160,7 +160,7 @@ public class MiningGrandExchangeRoutine extends Scenario {
         CooldownUtils.cooldown(1);
 
         var place = places.stream()
-                .filter(p -> p.getName().equals(item.getCode()+"_rocks"))
+                .filter(p -> p.getName().equals(item.getCode().replace("_ore","")+"_rocks"))
                 .findFirst()
                 .get();
 
@@ -183,7 +183,7 @@ public class MiningGrandExchangeRoutine extends Scenario {
         }
 
         // Sell ores to grand exchange
-        characterReponse = grandExchange.getAction(GrandExchangeAction.class).sell(item.getCode()+"_ore", character.getInventoryQuantity(item.getCode()+"_ore"));
+        characterReponse = grandExchange.getAction(GrandExchangeAction.class).sell(item.getCode(), character.getInventoryQuantity(item.getCode()));
         if(characterReponse != null) {
             character = characterReponse;
         }

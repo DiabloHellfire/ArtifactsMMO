@@ -27,8 +27,8 @@ public class MovementAction extends Action {
             return move(location.getX(), location.getY());
         } else {
             log.info("Player already at location [{},{}]", location.getX(), location.getY());
+            return character;
         }
-        return null;
     }
 
     public Character move(PlaceBase place, Character character) {

@@ -70,7 +70,7 @@ public class DepositAction extends Action {
     }
 
     public Character depositEverythingButOresOf(Character character, Item item) {
-        Character lastCharacterInfo = null; // Assuming deposit() returns an Object or another type
+        Character lastCharacterInfo = character; // Assuming deposit() returns an Object or another type
         for (InventoryItem inventoryItem : character.getInventory()) {
             if(!inventoryItem.getCode().equals(item.getCode()+"_ore"))
                 lastCharacterInfo = deposit(inventoryItem.getCode(), inventoryItem.getQuantity());
