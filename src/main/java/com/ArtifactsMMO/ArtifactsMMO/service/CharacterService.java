@@ -20,7 +20,6 @@ public class CharacterService {
                     .bodyToMono(CharacterResponseWrapper.class)
                     .map(CharacterResponseWrapper::getData)
                     .block();
-            log.info("Character infos retrieved !");
 
             return character;
         } catch (Exception e) {
