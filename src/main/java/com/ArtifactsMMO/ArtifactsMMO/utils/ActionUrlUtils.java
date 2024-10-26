@@ -10,4 +10,6 @@ public class ActionUrlUtils {
     public static final String GRAND_EXCHANGE_URL = "/ge";
     public static final String GRANG_EXCHANGE_SELL_URL = "/action/ge/sell";
     public static final String FIGHT_URL = "/action/fight";
+    public static final String EQUIP_URL = "/action/equip";
+    public static final String UNEQUIP_URL = "/action/unequip";
 }

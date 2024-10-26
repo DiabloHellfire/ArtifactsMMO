@@ -11,6 +11,7 @@ import com.ArtifactsMMO.ArtifactsMMO.utils.ItemsToCraftUtils;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,16 +31,21 @@ public class MiningRecycleRoutine extends Scenario {
     private final FightAction fightAction;
     private final Bank bank;
     private final DepositAction depositAction;
-    public MiningRecycleRoutine(@Autowired Forge forge,
-                                @Autowired Copper copper,
-                                @Autowired WeaponCrafting weaponCrafting,
-                                @Autowired MovementAction movementAction,
-                                @Autowired GatheringAction gatheringAction,
-                                @Autowired CharacterService characterService,
-                                @Autowired GearCrafting gearCrafting,
-                                @Autowired FightAction fightAction,
-                                @Autowired Bank bank,
-                                @Autowired DepositAction depositAction) {
+    private final EquipAction equipAction;
+    private final UnequipAction unequipAction;
+    @Autowired
+    public MiningRecycleRoutine(Forge forge,
+                                Copper copper,
+                                WeaponCrafting weaponCrafting,
+                                MovementAction movementAction,
+                                GatheringAction gatheringAction,
+                                CharacterService characterService,
+                                GearCrafting gearCrafting,
+                                FightAction fightAction,
+                                Bank bank,
+                                DepositAction depositAction,
+                                EquipAction equipAction,
+                                UnequipAction unequipAction) {
         this.forge = forge;
         this.copper = copper;
         this.weaponCrafting = weaponCrafting;
@@ -50,6 +56,8 @@ public class MiningRecycleRoutine extends Scenario {
         this.fightAction = fightAction;
         this.bank = bank;
         this.depositAction = depositAction;
+        this.equipAction = equipAction;
+        this.unequipAction = unequipAction;
         this.scenarioName = "miningRecycleRoutine";
     }
     
@@ -58,6 +66,20 @@ public class MiningRecycleRoutine extends Scenario {
 
         // Retrieve our character informations
         var character = characterService.getCharacter();
+
+        // Equip pickaxe
+        try {
+            if(StringUtils.isNotBlank(character.getWeaponSlot()) && !character.getWeaponSlot().contains("pickaxe")) {
+                try {
+                    unequipAction.unequip("weapon");
+                } catch (Exception e) {
+                    log.error("No weapon to unequip", e);
+                }
+            }
+            equipAction.equip(new IronPickaxe());
+        } catch (Exception e) {
+            log.error("No pickaxe to equip", e);
+        }
 
         // Move to copper rocks
         character = movementAction.move(Location.of(2,0), character);
@@ -84,13 +106,27 @@ public class MiningRecycleRoutine extends Scenario {
         character = movementAction.move(bank, character);
 
         // Deposit everything but ores and ingot
-        depositAction.depositEverythingBut(character, List.of(new Copper(), new CopperOre()));
+        depositAction.depositEverythingBut(character, List.of(new Copper(), new CopperOre(), new IronPickaxe(), new IronSword()));
 
         log.info("Copper mining & recycling routine finished");
     }
 
     public void ironRoutine(Item item, BuildingBase building) {
-        log.info("Beginning copper mining & recycling routine");
+        log.info("Beginning iron mining & recycling routine");
+
+        // Unequip current weapon
+        try {
+            unequipAction.unequip("weapon");
+        } catch (Exception e) {
+            log.error("No weapon to unequip", e);
+        }
+
+        // Equip pickaxe
+        try {
+            equipAction.equip(new IronPickaxe());
+        } catch (Exception e) {
+            log.error("No pickaxe to equip", e);
+        }
 
         // Retrieve our character informations
         var character = characterService.getCharacter();
@@ -110,10 +146,24 @@ public class MiningRecycleRoutine extends Scenario {
         // Move to chicken
         character = movementAction.move(Location.of(0,1), character);
 
+        // Unequip pickaxe
+        try {
+            unequipAction.unequip("weapon");
+        } catch (Exception e) {
+            log.error("No weapon to unequip", e);
+        }
+
+        // Equip sword
+        try {
+            equipAction.equip(new IronSword());
+        } catch (Exception e) {
+            log.error("No weapon to equip", e);
+        }
+
         var totalIron = character.getInventoryQuantity("iron");
         try {
             // Gather feather until we have enough
-            while(character.getInventoryQuantity(new Feather()) < (totalIron / item.getItemsForCraft()) * item.getItemsForCraft2()) {
+            while(character.getInventoryQuantity(new Feather()) < (totalIron / item.getItemsForCraft()) * item.getItemsForCraft2() + 6) {
                 character = fightAction.fight();
             }
         } catch (Exception e) {
@@ -125,7 +175,7 @@ public class MiningRecycleRoutine extends Scenario {
 
         // Craft & recycle until no more materials
         try {
-            while (ItemsToCraftUtils.getItemsCraftable(item, character.getInventoryQuantity(new Iron())) > 0) {
+            while (ItemsToCraftUtils.getItemsCraftable(item, character.getInventoryQuantity(new Iron())) > 0 && character.getInventoryQuantity("feather") >= item.getItemsForCraft2()) {
                 log.info("CRAFTING {}, {}", ItemsToCraftUtils.getItemsCraftable(item, character.getInventoryQuantity(new Iron())), character);
                 character = building.getAction(CraftingAction.class).craft(item, ItemsToCraftUtils.getItemsCraftable(item, character.getInventoryQuantity(new Iron())));
                 character = building.getAction(RecycleAction.class).recycle(item, character);
@@ -138,7 +188,7 @@ public class MiningRecycleRoutine extends Scenario {
         character = movementAction.move(bank, character);
 
         // Deposit everything not needed
-        depositAction.depositEverythingBut(character, List.of(new Iron(), new IronOre()));
+        depositAction.depositEverythingBut(character, List.of(new Iron(), new IronOre(), new IronPickaxe(), new IronSword()));
 
         log.info("Iron mining & recycling routine finished");
     }
