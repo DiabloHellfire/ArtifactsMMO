@@ -41,9 +41,6 @@ public class SpruceTreeBankRoutine extends Scenario {
         // Retrieve our character informations
         var character = characterService.getCharacter();
 
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
         // Move to mining spot
         character = movementAction.move(new SpruceTree().getLocation(), character);
 

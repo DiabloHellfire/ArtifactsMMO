@@ -38,26 +38,23 @@ public class HardwoodPlankBankRoutine extends Scenario {
         // Retrieve our character informations
         var character = characterService.getCharacter();
 
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
         int comboTotalItemsNeeded = new HardwoodPlanks().getItemsForCraft() + new HardwoodPlanks().getItemsForCraft2();
         int nbrOfPossibleCraft = (character.getMaxFreeInventorySlot() - 2) / comboTotalItemsNeeded;
 
         // Move to mining spot
-        character = movementAction.move(new BirchTree().getLocation(), character);
+        movementAction.move(new BirchTree().getLocation(), character);
 
         // Harvest item 1
         character = gatheringAction.gather(nbrOfPossibleCraft * new HardwoodPlanks().getItemsForCraft2());
 
         // Move to mining spot
-        character = movementAction.move(new AshTree().getLocation(), character);
+        movementAction.move(new AshTree().getLocation(), character);
 
         // Harvest item 2
         character = gatheringAction.gather(nbrOfPossibleCraft * new HardwoodPlanks().getItemsForCraft());
 
         // Move to woodcutting spot
-        character = movementAction.move(woodCutting, character);
+        movementAction.move(woodCutting, character);
 
         // Craft Hardwood Planks
         character = woodCutting.getAction(CraftingAction.class).craft(new HardwoodPlanks(), nbrOfPossibleCraft);

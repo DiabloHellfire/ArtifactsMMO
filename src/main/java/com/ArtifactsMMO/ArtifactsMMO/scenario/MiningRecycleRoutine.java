@@ -59,9 +59,6 @@ public class MiningRecycleRoutine extends Scenario {
         // Retrieve our character informations
         var character = characterService.getCharacter();
 
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
         // Move to copper rocks
         character = movementAction.move(Location.of(2,0), character);
 
@@ -97,9 +94,6 @@ public class MiningRecycleRoutine extends Scenario {
 
         // Retrieve our character informations
         var character = characterService.getCharacter();
-
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
 
         // Move to iron rocks
         character = movementAction.move(Location.of(1,7), character);

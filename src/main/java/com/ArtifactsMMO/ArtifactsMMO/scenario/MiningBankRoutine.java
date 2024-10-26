@@ -52,49 +52,28 @@ public class MiningBankRoutine extends Scenario {
         // Retrieve our character informations
         var character = characterService.getCharacter();
 
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
         var place = places.stream()
                 .filter(p -> p.getName().equals(item.getCode()+"_rocks"))
                 .findFirst()
                 .get();
 
         // Move to mining spot
-        var characterReponse = movementAction.move(place.getLocation(), character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(place.getLocation(), character);
 
         // Mine rocks until inventory is full
-        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
 
         // Move to forge
-        characterReponse = movementAction.move(forge, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(forge, character);
 
         // Smelt ores
-        characterReponse = forge.getAction(CraftingAction.class).craft(item, ItemsToCraftUtils.getItemsCraftable(item,character.getInventoryQuantity(item.getCode()+"_ore")));
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = forge.getAction(CraftingAction.class).craft(item, ItemsToCraftUtils.getItemsCraftable(item,character.getInventoryQuantity(item.getCode()+"_ore")));
 
         // Move to bank
-        characterReponse = movementAction.move(bank, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(bank, character);
 
         // Store bars in bank
-        characterReponse = bank.getAction(DepositAction.class).depositEverythingButOresOf(character, item);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = bank.getAction(DepositAction.class).depositEverythingButOresOf(character, item);
 
         bank.getAction(DepositAction.class).depositGold(character.getGold());
 

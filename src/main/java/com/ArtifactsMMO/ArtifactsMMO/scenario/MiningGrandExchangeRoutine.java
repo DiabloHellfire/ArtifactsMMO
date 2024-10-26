@@ -156,43 +156,26 @@ public class MiningGrandExchangeRoutine extends Scenario {
         // Retrieve our character informations
         var character = characterService.getCharacter();
 
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
         var place = places.stream()
                 .filter(p -> p.getName().equals(item.getCode().replace("_ore","")+"_rocks"))
                 .findFirst()
                 .get();
 
         // Move to rocks
-        var characterReponse = movementAction.move(place.getLocation(), character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(place.getLocation(), character);
 
         // Mine ore until inventory is full
-        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
 
         // Move to grand exchange
-        characterReponse = movementAction.move(grandExchange, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(grandExchange, character);
 
         // Sell ores to grand exchange
-        characterReponse = grandExchange.getAction(GrandExchangeAction.class).sell(item.getCode(), character.getInventoryQuantity(item.getCode()));
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = grandExchange.getAction(GrandExchangeAction.class).sell(item.getCode(), character.getInventoryQuantity(item.getCode()));
 
         // Move to bank & deposit gold
-        characterReponse = movementAction.move(bank, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(bank, character);
+
         bank.getAction(DepositAction.class).depositEverythingButOresOf(character, item);
         bank.getAction(DepositAction.class).depositGold(character.getGold());
 
@@ -205,55 +188,32 @@ public class MiningGrandExchangeRoutine extends Scenario {
         // Retrieve our character informations
         var character = characterService.getCharacter();
 
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
         var place = places.stream()
                 .filter(p -> p.getName().equals(item.getCode()+"_rocks"))
                 .findFirst()
                 .get();
 
         // Move to copper rocks
-        var characterReponse = movementAction.move(place.getLocation(), character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(place.getLocation(), character);
 
         // Mine ore until inventory is full
-        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
 
         // Move to forge
-        characterReponse = movementAction.move(forge, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(forge, character);
 
         // Smelt ores
-        characterReponse = forge.getAction(CraftingAction.class).craft(item, ItemsToCraftUtils.getItemsCraftable(item,character.getInventoryQuantity(item.getCode()+"_ore")));
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = forge.getAction(CraftingAction.class).craft(item, ItemsToCraftUtils.getItemsCraftable(item,character.getInventoryQuantity(item.getCode()+"_ore")));
 
         // Move to grand exchange
-        characterReponse = movementAction.move(grandExchange, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(grandExchange, character);
 
         // Sell material to grand exchange
-        characterReponse = grandExchange.getAction(GrandExchangeAction.class).sell(item.getCode(), character.getInventoryQuantity(item.getCode()));
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = grandExchange.getAction(GrandExchangeAction.class).sell(item.getCode(), character.getInventoryQuantity(item.getCode()));
 
         // Move to bank & deposit gold
-        characterReponse = movementAction.move(bank, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(bank, character);
+
         bank.getAction(DepositAction.class).depositEverythingButOresOf(character, item);
         bank.getAction(DepositAction.class).depositGold(character.getGold());
 
@@ -264,26 +224,14 @@ public class MiningGrandExchangeRoutine extends Scenario {
         // Retrieve our character informations
         var character = characterService.getCharacter();
 
-        // Wait for character to be able to take requests
-        CooldownUtils.cooldown(1);
-
         // Move to copper rocks
-        var characterReponse = movementAction.move(copperRocks, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(copperRocks, character);
 
         // Mine copper ore until inventory is full
-        characterReponse = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = gatheringAction.gather(character.getMaxFreeInventorySlot() - 2); // - 2 to keep 2 slots for rare drops TODO : update character every turn to get the right amount of free slots
 
         // Move to forge
-        characterReponse = movementAction.move(forge, character);
-        if(characterReponse != null) {
-            character = characterReponse;
-        }
+        character = movementAction.move(forge, character);
 
         // Smelt copper ores
         return forge.getAction(CraftingAction.class).craft(copper, ItemsToCraftUtils.getItemsCraftable(copper,character.getInventoryQuantity("copper_ore")));
