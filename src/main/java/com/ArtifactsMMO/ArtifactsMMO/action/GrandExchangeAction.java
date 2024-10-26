@@ -143,12 +143,12 @@ public class GrandExchangeAction extends Action {
                     .map(GrandExchangeListApiWrapper::getData)
                     .block();
             result.addAll(grandExchangeResponse);
-            log.info("All items in grand exchange : {}", result);
             try {
                 Thread.sleep(20);
             } catch (Exception e) {
                 log.error("Error while sleeping inbetween grand exchange list api calls", e);
             }
+            log.info("All items in grand exchange : {}", result);
         }
         return result;
     }

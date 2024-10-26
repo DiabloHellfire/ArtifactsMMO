@@ -61,7 +61,7 @@ public class MainService {
                     if(character.getGearcraftingLevel() >= 10) {
                         miningRecycleRoutine.ironRoutine(new IronBoots(), gearCrafting);
                     } else {
-                        miningRecycleRoutine.copperRoutine(copperBoots, gearCrafting);
+                        miningRecycleRoutine.copperRoutine(new CopperLegsArmor(), gearCrafting);
                     }
                 } else if (character.getName().contains("3")) {
                     // Farmer 3 -> WeaponCrafting
@@ -95,13 +95,18 @@ public class MainService {
 
     private void mainCharacter(int times) {
         if (times < 0) {
-            log.info("Mining copper rocks indefinitly");
             while (true) {
-                try {
-                    fightingLoopRoutine.fightingLoop(new Wolf());
-                } catch(Exception e) {
-                    depositEverythingRoutine.depositEverything();
+                var itemsToFarm = scenarioDeciderUtils.decideItemsForScenario();
+                if(!itemsToFarm.isEmpty()) {
+                    scenarioDeciderUtils.getScenarioFromItem(itemsToFarm.get(0)).run();
+                } else {
+                    scenarioDeciderUtils.getScenarioFromItem(null).run();
                 }
+//                try {
+//                    fightingLoopRoutine.fightingLoop(new Wolf());
+//                } catch(Exception e) {
+//                    depositEverythingRoutine.depositEverything();
+//                }
                 //miningRecycleRoutine.copperRoutine(copperBoots);
 //                    scenarioDeciderUtils.getScenarioFromItem(new Iron()).run();
             }
