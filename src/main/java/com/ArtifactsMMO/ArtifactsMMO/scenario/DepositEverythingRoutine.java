@@ -3,10 +3,13 @@ package com.ArtifactsMMO.ArtifactsMMO.scenario;
 import com.ArtifactsMMO.ArtifactsMMO.action.DepositAction;
 import com.ArtifactsMMO.ArtifactsMMO.action.MovementAction;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
+import com.ArtifactsMMO.ArtifactsMMO.model.item.Item;
 import com.ArtifactsMMO.ArtifactsMMO.model.place.Bank;
 import com.ArtifactsMMO.ArtifactsMMO.service.CharacterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor

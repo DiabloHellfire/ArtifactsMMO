@@ -7,5 +7,6 @@ public class Item {
     String name;
     String code;
     int itemsForCraft;
+    int itemsForCraft2;
     int minCorrectPrice;
 }

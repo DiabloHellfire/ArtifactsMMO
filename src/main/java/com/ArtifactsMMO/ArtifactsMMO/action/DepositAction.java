@@ -5,6 +5,7 @@ import com.ArtifactsMMO.ArtifactsMMO.model.character.Character;
 import com.ArtifactsMMO.ArtifactsMMO.model.character.InventoryItem;
 import com.ArtifactsMMO.ArtifactsMMO.model.item.Item;
 import com.ArtifactsMMO.ArtifactsMMO.model.wrapper.CommonApiWrapper;
+import com.ArtifactsMMO.ArtifactsMMO.service.CharacterService;
 import com.ArtifactsMMO.ArtifactsMMO.utils.BodyPayload;
 import com.ArtifactsMMO.ArtifactsMMO.utils.CooldownUtils;
 import lombok.NonNull;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.ArtifactsMMO.ArtifactsMMO.utils.ActionUrlUtils.*;
@@ -76,6 +78,15 @@ public class DepositAction extends Action {
                 lastCharacterInfo = deposit(inventoryItem.getCode(), inventoryItem.getQuantity());
         }
         return lastCharacterInfo;
+    }
+
+    public Character depositEverythingBut(Character character, List<Item> items) {
+        for (InventoryItem inventoryItem : character.getInventory()) {
+            if(items.stream().noneMatch(item -> item.getCode().equals(inventoryItem.getCode())))
+                character = deposit(inventoryItem.getCode(), inventoryItem.getQuantity());
+        }
+
+        return character;
     }
 
     public Character depositGold(int quantity) {
